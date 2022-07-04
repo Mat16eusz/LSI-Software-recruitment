@@ -16,6 +16,9 @@
         android:theme="@style/Theme.LSISoftware"
         tools:targetApi="31">
         <activity
+            android:name=".DisplayUserActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.lsisoftware.database.User;
@@ -19,9 +20,11 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.MyView
 
     private Context context;
     private List<User> userList;
+    private SelectListener listener;
 
-    public UserListAdapter(Context context) {
+    public UserListAdapter(Context context, SelectListener listener) {
         this.context = context;
+        this.listener = listener;
     }
 
     public void setUserList(List<User> userList) {
@@ -42,6 +45,13 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.MyView
         Picasso.get().load(this.userList.get(position).avatar);
         holder.name.setText(this.userList.get(position).name);
         holder.sourceAPI.setText(this.userList.get(position).sourceAPI);
+
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onItemClicked(holder);
+            }
+        });
     }
 
     @Override
@@ -54,6 +64,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.MyView
         ImageView avatar;
         TextView name;
         TextView sourceAPI;
+        public CardView cardView;
 
         public MyViewHolder(View view) {
             super(view);
@@ -61,6 +72,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.MyView
             avatar = view.findViewById(R.id.avatar);
             name = view.findViewById(R.id.name);
             sourceAPI = view.findViewById(R.id.sourceAPI);
+            cardView = view.findViewById(R.id.main_container);
         }
     }
 }

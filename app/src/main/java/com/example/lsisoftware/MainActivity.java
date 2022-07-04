@@ -11,19 +11,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.lsisoftware.database.AppDatabase;
 import com.example.lsisoftware.database.User;
 
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SelectListener {
 
     private UserListAdapter userListAdapter;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,12 +120,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initRecyclerView() {
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(dividerItemDecoration);
-        userListAdapter = new UserListAdapter(this);
+        userListAdapter = new UserListAdapter(this, this);
         recyclerView.setAdapter(userListAdapter);
+    }
+
+    @Override
+    public void onItemClicked(UserListAdapter.MyViewHolder myViewHolder) {
+        Intent intent = new Intent(MainActivity.this, DisplayUserActivity.class);
+
+        intent.putExtra("KEY_AVATAR", myViewHolder.avatar.toString());
+        intent.putExtra("KEY_NAME", myViewHolder.name.getText());
+        intent.putExtra("KEY_SOURCE_API", myViewHolder.sourceAPI.getText());
+
+        MainActivity.this.startActivity(intent);
     }
 }

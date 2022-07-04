@@ -4,16 +4,17 @@ import static com.example.lsisoftware.APIClient.getClient;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.lsisoftware.database.AppDatabase;
 import com.example.lsisoftware.database.User;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -22,7 +23,7 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ArrayList<String> id = new ArrayList<>();
+    private UserListAdapter userListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +32,10 @@ public class MainActivity extends AppCompatActivity {
 
         getUsersDataOne();
         getUsersDataTwo();
+
+        initRecyclerView();
+
+        loadUserList();
     }
 
     private void getUsersDataOne() {
@@ -91,15 +96,14 @@ public class MainActivity extends AppCompatActivity {
         user.avatar = avatar;
         user.sourceAPI = sourceAPI;
 
-        appDatabase.userDAO().insertUser();
-
-        finish();
+        appDatabase.userDAO().insertUser(user);
     }
 
     private void loadUserList() {
         AppDatabase appDatabase = AppDatabase.getDbInstance(this.getApplicationContext());
 
         List<User> userList = appDatabase.userDAO().getAllUsers();
+        userListAdapter.setUserList(userList);
     }
 
     @Override
@@ -109,5 +113,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void initRecyclerView() {
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+        recyclerView.addItemDecoration(dividerItemDecoration);
+        userListAdapter = new UserListAdapter(this);
+        recyclerView.setAdapter(userListAdapter);
     }
 }
